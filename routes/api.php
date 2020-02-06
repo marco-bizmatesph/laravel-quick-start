@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +13,13 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::prefix('post')->group(function () {
+    Route::match(['get', 'post'], 'search', 'PostController@search');
 });
+
+Route::prefix('user')->group(function () {
+    Route::match(['get', 'post'], 'search', 'UserController@search');
+});
+
+Route::apiResource('post', 'PostController');
+Route::apiResource('user', 'UserController');
