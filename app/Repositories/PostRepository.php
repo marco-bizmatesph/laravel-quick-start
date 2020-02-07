@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Post;
 use App\Repositories\Contracts\PostRepositoryInterface;
-use Facades\App\Repositories\Contracts\UserRepositoryInterface as UserRepository;
 
 class PostRepository extends Repository implements PostRepositoryInterface
 {
@@ -29,9 +28,5 @@ class PostRepository extends Repository implements PostRepositoryInterface
     public function __construct(Post $model)
     {
         $this->model = $model;
-
-        $this->relatedSearchRules = [
-            'user' => UserRepository::searchRules()
-        ];
     }
 }

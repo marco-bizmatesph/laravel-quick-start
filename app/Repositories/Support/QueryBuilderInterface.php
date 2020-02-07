@@ -14,7 +14,6 @@ interface QueryBuilderInterface
      * @param bool $inverse
      * @param bool $null
      * @param bool $notNull
-     * @param int $limit
      * @return \Illuminate\Database\Query\Builder $query
      */
     public function query(
@@ -25,7 +24,6 @@ interface QueryBuilderInterface
         $inverse = false,
         $strict = false,
         $null = false,
-        $notNull = false,
-        $limit = null
+        $notNull = false
     );
 }

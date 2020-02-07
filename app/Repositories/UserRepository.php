@@ -16,6 +16,7 @@ class UserRepository extends Repository implements UserRepositoryInterface
     protected $searchRules = [
         'id' => 'numeric',
         'name' => 'string',
+        'email' => 'string',
         'email_verified_at' => 'date'
     ];
 

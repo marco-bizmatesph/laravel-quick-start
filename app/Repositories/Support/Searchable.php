@@ -67,7 +67,6 @@ trait Searchable
                         request()->strict,
                         request()->null,
                         request()->notNull,
-                        request()->limit
                     );
                 }
             }
@@ -84,24 +83,25 @@ trait Searchable
     {
         $this->query = $this->model->query();
 
-        for ($i = 0; $i < count(request()->input('where')); $i++) {
-            $this->query = $this->query->where(function ($query) use ($i) {
-                foreach ($this->searchRules() as $column => $type) {
-                    if (request()->has("where.$i.$column")) {
-                        QueryBuilder::query(
-                            $column,
-                            $type,
-                            request()->input("where.$i.$column"),
-                            $query,
-                            request()->input("where.$i.inverse"),
-                            request()->input("where.$i.strict"),
-                            request()->input("where.$i.$column.null"),
-                            request()->input("where.$i.$column.notNull"),
-                            request()->input("where.$i.limit")
-                        );
+        if (request()->has('where')) {
+            for ($i = 0; $i < count(request()->input('where')); $i++) {
+                $this->query = $this->query->where(function ($query) use ($i) {
+                    foreach ($this->searchRules() as $column => $type) {
+                        if (request()->has("where.$i.$column")) {
+                            QueryBuilder::query(
+                                $column,
+                                $type,
+                                request()->input("where.$i.$column"),
+                                $query,
+                                request()->input("where.$i.inverse"),
+                                request()->input("where.$i.strict"),
+                                request()->input("where.$i.$column.null"),
+                                request()->input("where.$i.$column.notNull"),
+                            );
+                        }
                     }
-                }
-            });
+                });
+            }
         }
 
         return $this;
@@ -122,13 +122,13 @@ trait Searchable
                 }
 
                 if (request()->has("has.$key.lessThan")) {
-                    $this->query->has(request()->has("has.$key.relationship"), '<', request()->has("has.$key.lessThan"));
+                    $this->query->has(request()->input("has.$key.relationship"), '<', request()->input("has.$key.lessThan"));
                 } else if (request()->has("has.$key.lessThanEqualTo")) {
-                    $this->query->has(request()->has("has.$key.relationship"), '<=', request()->has("has.$key.lessThanEqualTo"));
+                    $this->query->has(request()->input("has.$key.relationship"), '<=', request()->input("has.$key.lessThanEqualTo"));
                 } else if (request()->has("has.$key.greaterThan")) {
-                    $this->query->has(request()->has("has.$key.relationship"), '>', request()->has("has.$key.greaterThanEqualTo"));
+                    $this->query->has(request()->input("has.$key.relationship"), '>', request()->input("has.$key.greaterThan"));
                 } else if (request()->has("has.$key.greaterThanEqualTo")) {
-                    $this->query->has(request()->has("has.$key.relationship"), '>=', request()->has("has.$key.greaterThanEqualTo"));
+                    $this->query->has(request()->input("has.$key.relationship"), '>=', request()->input("has.$key.greaterThanEqualTo"));
                 }
 
                 if (request()->has("has.$key.where")) {
@@ -150,8 +150,7 @@ trait Searchable
                                         Arr::get($where, 'inverse'),
                                         Arr::get($where, 'strict'),
                                         Arr::get(Arr::get($where, $column), 'null'),
-                                        Arr::get(Arr::get($where, $column), 'notNull'),
-                                        Arr::get($where, 'limit')
+                                        Arr::get(Arr::get($where, $column), 'notNull')
                                     );
                                 }
                             }
@@ -178,16 +177,6 @@ trait Searchable
                     continue;
                 }
 
-                if (request()->has("doesntHave.$key.lessThan")) {
-                    $this->query->doesntHave(request()->has("doesntHave.$key.relationship"), '<', request()->has("doesntHave.$key.lessThan"));
-                } else if (request()->has("doesntHave.$key.lessThanEqualTo")) {
-                    $this->query->doesntHave(request()->has("doesntHave.$key.relationship"), '<=', request()->has("doesntHave.$key.lessThanEqualTo"));
-                } else if (request()->has("doesntHave.$key.greaterThan")) {
-                    $this->query->doesntHave(request()->has("doesntHave.$key.relationship"), '>', request()->has("doesntHave.$key.greaterThanEqualTo"));
-                } else if (request()->has("doesntHave.$key.greaterThanEqualTo")) {
-                    $this->query->doesntHave(request()->has("doesntHave.$key.relationship"), '>=', request()->has("doesntHave.$key.greaterThanEqualTo"));
-                }
-
                 if (request()->has("doesntHave.$key.where")) {
                     $rules = Arr::get($this->relatedSearchRules(), request()->input("doesntHave.$key.relationship"));
 
@@ -207,8 +196,7 @@ trait Searchable
                                         Arr::get($where, 'inverse'),
                                         Arr::get($where, 'strict'),
                                         Arr::get(Arr::get($where, $column), 'null'),
-                                        Arr::get(Arr::get($where, $column), 'notNull'),
-                                        Arr::get($where, 'limit')
+                                        Arr::get(Arr::get($where, $column), 'notNull')
                                     );
                                 }
                             }
@@ -237,7 +225,23 @@ trait Searchable
 
                 if (request()->has("with.$key.orderBy")) {
                     $this->query->with([request()->input("with.$key.relationship") => function ($query) use ($key) {
-                        $query->orderBy(request()->input("with.$key.orderBy"), request()->input("with.$key.direction") ?: 'asc');
+                        switch (gettype(request()->input("with.$key.orderBy"))) {
+                            case 'array':
+                                foreach (request()->input("with.$key.orderBy") as $orderBy) {
+                                    $this->query->orderBy(
+                                        Arr::get($orderBy, 'column'),
+                                        Arr::get($orderBy, 'descending') ? 'desc' : 'asc'
+                                    );
+                                }
+                                break;
+
+                            case 'string':
+                                $this->query->orderBy(
+                                    request()->input("with.$key.orderBy"),
+                                    request()->input("with.$key.descending") ? 'desc' : 'asc'
+                                );
+                                break;
+                        }
                     }]);
                 }
 
@@ -260,8 +264,7 @@ trait Searchable
                                         Arr::get($where, 'inverse'),
                                         Arr::get($where, 'strict'),
                                         Arr::get(Arr::get($where, $column), 'null'),
-                                        Arr::get(Arr::get($where, $column), 'notNull'),
-                                        Arr::get($where, 'limit')
+                                        Arr::get(Arr::get($where, $column), 'notNull')
                                     );
                                 }
                             }
@@ -288,12 +291,6 @@ trait Searchable
                     continue;
                 }
 
-                if (request()->has("withCount.$key.orderBy")) {
-                    $this->query->withCount([request()->input("withCount.$key.relationship") => function ($query) use ($key) {
-                        $query->orderBy(request()->input("withCount.$key.orderBy"), request()->input("withCount.$key.direction") ?: 'asc');
-                    }]);
-                }
-
                 if (request()->has("withCount.$key.where")) {
                     $rules = Arr::get($this->relatedSearchRules(), request()->input("withCount.$key.relationship"));
 
@@ -313,8 +310,7 @@ trait Searchable
                                         Arr::get($where, 'inverse'),
                                         Arr::get($where, 'strict'),
                                         Arr::get(Arr::get($where, $column), 'null'),
-                                        Arr::get(Arr::get($where, $column), 'notNull'),
-                                        Arr::get($where, 'limit')
+                                        Arr::get(Arr::get($where, $column), 'notNull')
                                     );
                                 }
                             }

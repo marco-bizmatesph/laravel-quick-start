@@ -3,6 +3,7 @@
 namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Arr;
 
 class SearchRequest extends FormRequest
 {
@@ -23,12 +24,22 @@ class SearchRequest extends FormRequest
      */
     public function rules()
     {
-        return request()->isMethod('post')
-            ? [
-                'where' => 'required|array'
-            ]
-            : [
-                // 
-            ];
+        $validation = [
+            'doesntHave' => 'sometimes|required|array',
+            'first' => 'sometimes|required|bool',
+            'has' => 'sometimes|required|array',
+            'onlyTrashed' => 'sometimes|required|bool',
+            'page' => 'sometimes|required|numeric',
+            'perPage' => 'sometimes|required|numeric',
+            'with' => 'sometimes|required|array',
+            'withCount' => 'sometimes|required|array',
+            'withTrashed' => 'sometimes|required|bool',
+        ];
+
+        if (request()->isMethod('post')) {
+            Arr::set($validation, 'where', 'sometimes|required|array');
+        }
+
+        return $validation;
     }
 }

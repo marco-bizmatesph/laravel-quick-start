@@ -64,13 +64,6 @@ class QueryBuilder implements QueryBuilderInterface
     protected $notNull;
 
     /**
-     * Sets the limit for the query.
-     * 
-     * @var int
-     */
-    protected $limit;
-
-    /**
      * Builds the conditions for the query.
      *
      * @param string $column
@@ -80,7 +73,6 @@ class QueryBuilder implements QueryBuilderInterface
      * @param bool $inverse
      * @param bool $null
      * @param bool $notNull
-     * @param int $limit
      * @return \Illuminate\Database\Query\Builder $query
      */
     public function query(
@@ -91,8 +83,7 @@ class QueryBuilder implements QueryBuilderInterface
         $inverse = false,
         $strict = false,
         $null = false,
-        $notNull = false,
-        $limit = null
+        $notNull = false
     ) {
         $this->column = $column;
         $this->type = $type;
@@ -102,7 +93,6 @@ class QueryBuilder implements QueryBuilderInterface
         $this->strict = $strict;
         $this->null = $null;
         $this->notNull = $notNull;
-        $this->limit = $limit;
 
         $this->setMethods()
             ->setConditions();
@@ -170,10 +160,6 @@ class QueryBuilder implements QueryBuilderInterface
                 $this->stringConditions();
                 break;
         }
-
-        if ($this->limit) {
-            $this->query->limit($this->limit);
-        }
     }
 
     /**
@@ -185,11 +171,10 @@ class QueryBuilder implements QueryBuilderInterface
     {
         if ($this->null) {
             $this->query->{$this->whereNull}($this->column);
-            return;
         } else if ($this->notNull) {
             $this->query->{$this->whereNotNull}($this->column);
-            return;
         }
+        return;
     }
 
     /**
