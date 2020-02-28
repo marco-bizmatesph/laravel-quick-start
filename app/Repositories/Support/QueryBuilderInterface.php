@@ -12,8 +12,7 @@ interface QueryBuilderInterface
      * @param string|array $item
      * @param \Illuminate\Database\Query\Builder $query
      * @param bool $inverse
-     * @param bool $null
-     * @param bool $notNull
+     * @param bool|null $null
      * @return \Illuminate\Database\Query\Builder $query
      */
     public function query(
@@ -23,7 +22,6 @@ interface QueryBuilderInterface
         $query,
         $inverse = false,
         $strict = false,
-        $null = false,
-        $notNull = false
+        $null
     );
 }

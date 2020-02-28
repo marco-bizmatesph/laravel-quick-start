@@ -57,13 +57,6 @@ class QueryBuilder implements QueryBuilderInterface
     protected $null;
 
     /**
-     * Handles whereNotNull and orWhereNotNull condition.
-     * 
-     * @var bool
-     */
-    protected $notNull;
-
-    /**
      * Builds the conditions for the query.
      *
      * @param string $column
@@ -71,8 +64,7 @@ class QueryBuilder implements QueryBuilderInterface
      * @param string|array $item
      * @param \Illuminate\Database\Query\Builder $query
      * @param bool $inverse
-     * @param bool $null
-     * @param bool $notNull
+     * @param bool|null $null
      * @return \Illuminate\Database\Query\Builder $query
      */
     public function query(
@@ -82,8 +74,7 @@ class QueryBuilder implements QueryBuilderInterface
         $query,
         $inverse = false,
         $strict = false,
-        $null = false,
-        $notNull = false
+        $null
     ) {
         $this->column = $column;
         $this->type = $type;
@@ -92,7 +83,6 @@ class QueryBuilder implements QueryBuilderInterface
         $this->inverse = $inverse;
         $this->strict = $strict;
         $this->null = $null;
-        $this->notNull = $notNull;
 
         $this->setMethods()
             ->setConditions();
@@ -145,7 +135,7 @@ class QueryBuilder implements QueryBuilderInterface
      */
     protected function setConditions()
     {
-        if ($this->null || $this->notNull) return $this->nullOrNotNull();
+        if (isset($this->null)) return $this->nullOrNotNull();
 
         switch ($this->type) {
             case 'date':
@@ -171,7 +161,7 @@ class QueryBuilder implements QueryBuilderInterface
     {
         if ($this->null) {
             $this->query->{$this->whereNull}($this->column);
-        } else if ($this->notNull) {
+        } else {
             $this->query->{$this->whereNotNull}($this->column);
         }
         return;
