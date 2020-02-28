@@ -12,13 +12,6 @@ interface RepositoryInterface
     public function model();
 
     /**
-     * Number of items per paging.
-     *
-     * @return integer
-     */
-    public function perPage();
-
-    /**
      * Column index for searching.
      *
      * @return array

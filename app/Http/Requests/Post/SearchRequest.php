@@ -3,10 +3,13 @@
 namespace App\Http\Requests\Post;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Arr;
+
+use App\Http\Requests\SearchRules;
 
 class SearchRequest extends FormRequest
 {
+    use SearchRules;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -24,22 +27,6 @@ class SearchRequest extends FormRequest
      */
     public function rules()
     {
-        $validation = [
-            'doesntHave' => 'sometimes|required|array',
-            'first' => 'sometimes|required|bool',
-            'has' => 'sometimes|required|array',
-            'onlyTrashed' => 'sometimes|required|bool',
-            'page' => 'sometimes|required|numeric',
-            'perPage' => 'sometimes|required|numeric',
-            'with' => 'sometimes|required|array',
-            'withCount' => 'sometimes|required|array',
-            'withTrashed' => 'sometimes|required|bool',
-        ];
-
-        if (request()->isMethod('post')) {
-            Arr::set($validation, 'where', 'sometimes|required|array');
-        }
-
-        return $validation;
+        return $this->validation();
     }
 }

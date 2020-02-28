@@ -72,16 +72,6 @@ abstract class Repository implements RepositoryInterface
     }
 
     /**
-     * Number of items per paging.
-     *
-     * @return integer
-     */
-    public function perPage()
-    {
-        return isset($this->perPage) ? $this->perPage : 10;
-    }
-
-    /**
      * Column index for searching.
      *
      * @return array

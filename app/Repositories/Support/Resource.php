@@ -72,6 +72,6 @@ trait Resource
 
         $model->delete();
 
-        return response()->json(true);
+        return 1;
     }
 }

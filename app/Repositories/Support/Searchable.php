@@ -52,6 +52,7 @@ trait Searchable
     /**
      * Builds the search query for the model.
      *
+     * @return $this
      */
     protected function simpleSearchQuery()
     {
@@ -108,6 +109,7 @@ trait Searchable
     /**
      * Check if there are related models of the resource.
      *
+     * @return $this
      */
     protected function hasRelatedModels()
     {
@@ -163,6 +165,7 @@ trait Searchable
     /**
      * Check if there are no related models of the resource.
      *
+     * @return $this
      */
     protected function doesntHaveRelatedModels()
     {
@@ -208,6 +211,7 @@ trait Searchable
     /**
      * Get related models of the resource.
      *
+     * @return $this
      */
     protected function withRelatedModels()
     {
@@ -275,6 +279,7 @@ trait Searchable
     /**
      * Count related models of the resource.
      *
+     * @return $this
      */
     protected function countRelatedModels()
     {
@@ -320,6 +325,7 @@ trait Searchable
     /**
      * Filter the results of the query to show deleted records
      *
+     * @return $this
      */
     protected function filter()
     {
@@ -335,6 +341,7 @@ trait Searchable
     /**
      * Sort the results of the query
      *
+     * @return $this
      */
     protected function sort()
     {
@@ -364,6 +371,7 @@ trait Searchable
     /**
      * Prepare the response.
      *
+     * @return mixed
      */
     protected function respond()
     {
@@ -375,9 +383,11 @@ trait Searchable
             return $this->setResponseResource($data);
         } else {
             if (request()->perPage) {
-                $data = $this->query->paginate(request()->perPage ?: $this->perPage());
+                $data = $this->query->paginate(request()->perPage);
             } else {
-                $data = request()->has('with') || request()->has('withCount') ? $this->query->get() : $this->query->cursor();
+                $data = request()->has('with') || request()->has('withCount')
+                    ? $this->query->get()
+                    : $this->query->cursor();
             }
 
             return $this->setResponseCollection($data);
