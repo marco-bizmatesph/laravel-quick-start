@@ -5,9 +5,8 @@ namespace App\Http\Requests;
 trait SearchRules
 {
     /**
-     * Search requests validation rule.
+     * Search request validation rules
      * 
-     * @return array
      */
     public function validation()
     {
@@ -30,7 +29,7 @@ trait SearchRules
             'withTrashed' => 'sometimes|required|bool',
         ];
 
-        if (request()->isMethod('post')) {
+        if (request()->isMethod('POST')) {
             $validation['doesntHave.*.relationship'] = 'sometimes|required|string';
             $validation['doesntHave.*.where'] = 'sometimes|required|array';
             $validation['doesntHave.*.where.*.inverse'] = 'sometimes|required|bool';

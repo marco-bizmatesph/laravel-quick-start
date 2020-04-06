@@ -66,7 +66,7 @@ trait Searchable
                         $query,
                         request()->inverse,
                         request()->strict,
-                        request()->null,
+                        request()->null
                     );
                 }
             }
@@ -95,7 +95,7 @@ trait Searchable
                                 $query,
                                 request()->input("where.$i.inverse"),
                                 request()->input("where.$i.strict"),
-                                request()->input("where.$i.$column.null"),
+                                request()->input("where.$i.$column.null")
                             );
                         }
                     }
@@ -149,7 +149,7 @@ trait Searchable
                                         $query,
                                         Arr::get($where, 'inverse'),
                                         Arr::get($where, 'strict'),
-                                        Arr::get(Arr::get($where, $column), 'null'),
+                                        Arr::get(Arr::get($where, $column), 'null')
                                     );
                                 }
                             }
@@ -195,7 +195,7 @@ trait Searchable
                                         $query,
                                         Arr::get($where, 'inverse'),
                                         Arr::get($where, 'strict'),
-                                        Arr::get(Arr::get($where, $column), 'null'),
+                                        Arr::get(Arr::get($where, $column), 'null')
                                     );
                                 }
                             }
@@ -263,7 +263,7 @@ trait Searchable
                                         $query,
                                         Arr::get($where, 'inverse'),
                                         Arr::get($where, 'strict'),
-                                        Arr::get(Arr::get($where, $column), 'null'),
+                                        Arr::get(Arr::get($where, $column), 'null')
                                     );
                                 }
                             }
@@ -309,7 +309,7 @@ trait Searchable
                                         $query,
                                         Arr::get($where, 'inverse'),
                                         Arr::get($where, 'strict'),
-                                        Arr::get(Arr::get($where, $column), 'null'),
+                                        Arr::get(Arr::get($where, $column), 'null')
                                     );
                                 }
                             }
