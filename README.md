@@ -1,4 +1,4 @@
-# laravel-quick-start
+# Laravel Playground
 
 Laravel with implementation of Repository and Service Pattern
 
